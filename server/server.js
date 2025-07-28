@@ -6,9 +6,11 @@ const cors = require('cors');
 
 //Routes
 const userRoute = require('./routes/user');
+const documentRoute = require('./routes/document')
+const { userAuthorization } = require('./middleware/userAuthorization')
 
 //authorization
-const { authorization, checker } = require('./middleware/authorization');
+
 
 
 const app=express();
@@ -25,8 +27,8 @@ app.use(cors({
   credentials: true,
 }));
 
-app.use('/',userRoute)
-app.post('/llll',authorization,checker)
+app.use('/',userRoute,documentRoute)
+app.post('/llll',userAuthorization,(req,res)=>{return res.json({user:req.user})})
 
 
 //start server
