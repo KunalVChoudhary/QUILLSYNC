@@ -10,5 +10,32 @@ const handleDocumentGetRequest = (req,res)=>{
     }
 }
 
+const handleDocumentCreateRequest = async (req,res)=>{
+    try {
+        const {title,collaborators} = req.body
+        const owner=req.user.userId
+        const failedCollaborator=[]
+        if (collaborators){
+            const users = await Promise.all(
+                collaborators.map(async (email) =>{
+                    const user = await User.findOne({ email })
+                    if (!user){
+                        failedCollaborator.push(email)
+                    }
+                    return user
+                })
+            )
+            collaborators = users.filter(user => user !== null)
+            .map(user => user._id);
+        }
+        const document = await Document.create({title,owner,collaborators})
+        return res.status(200).json({document,failedCollaborator})
 
-module.exports={handleDocumentGetRequest}
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:'Server Error'})
+    }
+}
+
+
+module.exports={handleDocumentGetRequest, handleDocumentCreateRequest}
