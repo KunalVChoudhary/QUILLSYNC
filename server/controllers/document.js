@@ -37,5 +37,20 @@ const handleDocumentCreateRequest = async (req,res)=>{
     }
 }
 
+const handleDocumentPatchRequest = async (req,res)=>{
 
-module.exports={handleDocumentGetRequest, handleDocumentCreateRequest}
+}
+
+const handleDocumentDeleteRequest = async (req,res)=>{
+    try {
+        await Document.findByIdAndDelete(req.document._id)
+        return res.status(200).json("document is deleted")
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:'Server Error'})
+    }
+}
+
+
+
+module.exports={handleDocumentGetRequest, handleDocumentCreateRequest, handleDocumentPatchRequest, handleDocumentDeleteRequest}
