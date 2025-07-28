@@ -8,7 +8,6 @@ const documentSchema = new Schema({
     content:{
         type:String,
         default:'',
-        required:true
     },
     owner:{
         type:Schema.Types.ObjectId,
