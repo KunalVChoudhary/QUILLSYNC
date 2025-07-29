@@ -2,6 +2,7 @@ const Document = require("../models/document")
 const User = require("../models/user")
 
 
+//documents controllers
 const handleDocumentGetRequest = (req,res)=>{
     try {
         return res.status(200).json({document:req.document})
@@ -15,6 +16,7 @@ const handleDocumentCreateRequest = async (req,res)=>{
         const {title,collaborators} = req.body
         const owner=req.user.userId
         const failedCollaborator=[]
+        let finalCollaborators = []
         if (collaborators){
             const users = await Promise.all(
                 collaborators.map(async (email) =>{
@@ -25,10 +27,10 @@ const handleDocumentCreateRequest = async (req,res)=>{
                     return user
                 })
             )
-            collaborators = users.filter(user => user !== null)
+            finalCollaborators = users.filter(user => user !== null)
             .map(user => user._id);
         }
-        const document = await Document.create({title,owner,collaborators})
+        const document = await Document.create({title,owner,collaborators:finalCollaborators})
         return res.status(200).json({document,failedCollaborator})
 
     } catch (error) {
@@ -51,6 +53,35 @@ const handleDocumentDeleteRequest = async (req,res)=>{
     }
 }
 
+//collaborators controllers
+
+const handleAddingCollaboratorsRequest = async (req,res)=>{
+    try {
+        const {collaborators} = req.body
+        const failedCollaborator=[]
+        let finalCollaborators = []
+        if (collaborators){
+            const users = await Promise.all(
+                collaborators.map(async (email) =>{
+                    const user = await User.findOne({ email })
+                    if (!user){
+                        failedCollaborator.push(email)
+                    }
+                    return user
+                })
+            )
+            finalCollaborators = users.filter(user => user !== null)
+            .map(user => user._id);
+        }
+        const document = await Document.findOneAndUpdate({_id:req.document._id},{collaborators:req.document.collaborators.concat(finalCollaborators)},{new:true})
+        return res.status(200).json({document,failedCollaborator})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({message:'Server Error'})
+    }
+}
 
 
-module.exports={handleDocumentGetRequest, handleDocumentCreateRequest, handleDocumentPatchRequest, handleDocumentDeleteRequest}
+
+module.exports={handleDocumentGetRequest, handleDocumentCreateRequest, handleDocumentPatchRequest, handleDocumentDeleteRequest, handleAddingCollaboratorsRequest}
