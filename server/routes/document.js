@@ -1,10 +1,15 @@
 const {Router} = require('express')
 const { documentAuthorizationCheck, documentOwnerAuthorizationCheck } = require('../middleware/documentAuthorizationCheck')
 const { userAuthorization } = require('../middleware/userAuthorization')
-const { handleDocumentGetRequest, handleDocumentCreateRequest, handleDocumentPatchRequest, handleDocumentDeleteRequest, handleAddingCollaboratorsRequest, } = require('../controllers/document')
+const { handleDocumentGetRequest, handleDocumentCreateRequest, handleDocumentPatchRequest, handleDocumentDeleteRequest, handleAddingCollaboratorsRequest, handleRemovingCollaboratorsRequest, handleGetAuthorizedDocumentsListRequest, } = require('../controllers/document')
 
 
 const route = Router()
+//temporarily resolved routes naming issue for the get routes '/documents/user' and '/documents/:docId'; Rename routes better solution
+
+
+//Document Authorized to access routes
+route.get('/documents/user', userAuthorization, handleGetAuthorizedDocumentsListRequest)
 
 
 //document routes
@@ -19,5 +24,7 @@ route.delete('/documents/:docId', userAuthorization, documentOwnerAuthorizationC
 
 //collaborators routes
 route.patch('/documents/:docId/collaborator/add', userAuthorization, documentOwnerAuthorizationCheck, handleAddingCollaboratorsRequest)
+
+route.patch('/documents/:docId/collaborator/remove', userAuthorization, documentOwnerAuthorizationCheck, handleRemovingCollaboratorsRequest)
 
 module.exports= route
