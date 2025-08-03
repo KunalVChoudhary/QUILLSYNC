@@ -28,7 +28,7 @@ app.use(cors({
 }));
 
 app.use('/',userRoute,documentRoute)
-app.post('/llll',userAuthorization,(req,res)=>{return res.json({user:req.user})})
+app.get('/llll',userAuthorization,(req,res)=>{return res.json({user:req.user})})
 
 
 //start server
