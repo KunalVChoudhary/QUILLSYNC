@@ -53,67 +53,64 @@ function LoginForm({purpose}){
 
   return (
     <>
-      <Form onSubmit={handleSubmission}>
-        <Form.Group as={Row} className="mb-3">
-          <Form.Label column sm={2}>
-            Email:
-          </Form.Label>
-          <Col sm={10}>
-            <FloatingLabel controlId="email" label="Email address" className="mb-3">
+      <Form onSubmit={handleSubmission} className='mx-4 my-5 w-100'>
+        <Form.Group className='d-flex row align-items-center m-0 mb-2'>
+          <div className='col-3 fs-5 p-0'>
+            Email : 
+          </div>
+          <div className='col-9 p-0'>
+            <FloatingLabel controlId="email" label="Email address" className='ps-2'>
               <Form.Control
                 type="email"
                 placeholder="name@example.com"
                 name="email"
                 value={LoginData.email}
                 required
-                onChange={handleChange}
-              />
+                onChange={handleChange} />
             </FloatingLabel>
-          </Col>
+          </div>
         </Form.Group>
 
         {(purpose ==='Sign Up') ?
-        <Form.Group as={Row} className="mb-3">
-          <Form.Label column sm={2}>
-            Username:
-          </Form.Label>
-          <Col sm={10}>
-            <FloatingLabel controlId="username" label="Username" className="mb-3">
+        <Form.Group className='d-flex row align-items-center m-0 mb-2'>
+          <div className='col-3 fs-5 p-0'>
+              Username : 
+          </div>
+          <div className='col-9 p-0'>
+            <FloatingLabel controlId="username" label="Username" className='ps-2'>
               <Form.Control
                 type="text"
                 placeholder="username"
                 name="username"
                 value={LoginData.username}
                 required
-                onChange={handleChange}
-              />
+                onChange={handleChange} />
             </FloatingLabel>
-          </Col>
-        </Form.Group>
-        :''}
+          </div>
+        </Form.Group> : ''
+        }
 
-        <Form.Group as={Row} className="mb-3">
-          <Form.Label column sm={2}>
-            Password:
-          </Form.Label>
-          <Col sm={10}>
-            <FloatingLabel controlId="password" label="Password">
+        <Form.Group className='d-flex row align-items-center m-0 mb-2'>
+          <div className='col-3 fs-5 p-0'>
+            Password : 
+          </div>
+          <div className='col-9 p-0'>
+            <FloatingLabel controlId="password" label="Password" className='ps-2'>
               <Form.Control
                 type="password"
                 placeholder="Password"
                 name="password"
                 value={LoginData.password}
                 required
-                onChange={handleChange}
-              />
+                onChange={handleChange} />
             </FloatingLabel>
-          </Col>
+          </div>
         </Form.Group>
-
-        <Form.Group as={Row} className="mb-3">
-          <Col sm={{ span: 10, offset: 2 }}>
-            <Button type="submit">{purpose}</Button>
-          </Col>
+        
+        <Form.Group className=" d-flex align-items-center justify-content-center">
+          <div >
+            <button type="submit" className='mt-2 px-3 btn btn-outline-primary text-white'>{purpose}</button>
+          </div>
         </Form.Group>
       </Form>
     </>
