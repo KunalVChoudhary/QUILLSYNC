@@ -1,0 +1,13 @@
+.login-form-container{
+    position:absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    display: block;
+    background: transparent;
+    min-height: 250px;
+    min-width: 450px;
+    border: 2px solid aliceblue;
+    border-radius: 20px;
+    color: aliceblue;
+}
