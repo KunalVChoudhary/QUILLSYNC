@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 import RegisterPage from './pages/RegisterPage/RegisterPage'
 import { Route, Routes } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify'
-//import 'react-toastify/dist/ReactToastify.css';
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css'; // Optional: import Quill theme CSS
 import * as Y from 'yjs'
 import { QuillBinding } from 'y-quill'
 import { WebsocketProvider } from 'y-websocket'
+import HomePage from './pages/HomePage/HomePage'
 
 
 function App() {
@@ -87,21 +86,13 @@ yahe pe ydoc.getText('quill') 'quill' just ek name hai joh iss particular docume
     return (
         <>
           <Routes>
-            <Route path='/register' element={
-              <div>
-                <ToastContainer position="top-right" />
-                <RegisterPage purpose='Sign Up' />
-              </div>
-            } />
+            <Route path='/register' element = { <RegisterPage purpose='Sign Up' /> } />
 
-            <Route path='/login' element={
-              <div>
-                <ToastContainer position="top-right" />
-                <RegisterPage purpose='Sign In' />
-              </div>
-            } />
+            <Route path='/login' element = { <RegisterPage purpose='Sign In' /> } />
 
-            <Route path='/' element={
+            <Route path='/' element = { <HomePage /> } />
+
+            <Route path='/user' element={
               <div className="editor-container" ref={editorRef} style={{height: '100vh'}}>
                 {/* Quill editor will be initialized here */}
               </div>
