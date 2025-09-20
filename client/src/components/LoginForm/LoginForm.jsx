@@ -47,7 +47,7 @@ function LoginForm({purpose}){
             }
 
         } catch (error) {
-            
+            toast.error('Error! Try Again')
         }
     }
 
