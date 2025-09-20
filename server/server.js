@@ -10,7 +10,6 @@ const connectWebSocket = require('./service/websocketConnection.js')
 const userRoute = require('./routes/user');
 const documentRoute = require('./routes/document')
 const { userAuthorization } = require('./middleware/userAuthorization');
-const { create } = require('./models/user');
 
 const app = express();
 const server = createServer(app);
