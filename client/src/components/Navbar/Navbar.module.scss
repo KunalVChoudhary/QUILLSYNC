@@ -1,0 +1,53 @@
+.common-navbar{
+    height: 70px;
+    position: fixed;
+    z-index: 800;
+    background-color: black;
+    color: aliceblue;
+}
+
+.container-1{
+    cursor: pointer;
+}
+
+.container-1>div>p{
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+// .app-icon{
+//     height: 65px;
+//     width: 65px;
+// }
+
+.container-2>div{
+    border: 2px solid transparent;
+}
+
+.container-2>div:hover{
+    border-color: white;
+    cursor: pointer;
+}
+
+.dropdown-list{
+    display: none;   
+}
+
+.profile-container:hover{
+    .dropdown-list{
+        display: flex;
+    }
+}
+
+.dropdown-list>div{
+    border: 2px solid transparent;
+}
+
+.dropdown-list>div:hover{
+    border-color: white;
+    cursor: pointer;
+}
+
+.navItemSelected{
+    color: bisque;
+    text-decoration: underline;
+}
