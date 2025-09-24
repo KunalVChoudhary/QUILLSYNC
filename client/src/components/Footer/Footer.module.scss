@@ -1,0 +1,30 @@
+.footerLinks {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 0;
+
+  li {
+    margin-bottom: 8px;
+  }
+
+  a {
+    color: #bbb;
+    text-decoration: none;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
+
+.footerSocial {
+  a {
+    margin-right: 10px;
+    color: #bbb;
+    font-size: 1.4rem;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+}
