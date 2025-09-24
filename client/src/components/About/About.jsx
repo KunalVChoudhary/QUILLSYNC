@@ -19,12 +19,12 @@ function About(){
                         collaboration faster and more productive.
                     </p>
                     <div className="d-flex justify-content-center">
-                        <a href="https://www.linkedin.com/in/kunal-vijayshree-choudhary/" target="_blank" class="btn btn-outline-light me-3">
-                        <i class="bi bi-linkedin me-1"></i> LinkedIn
+                        <a href="https://www.linkedin.com/in/kunal-vijayshree-choudhary/" target="_blank" className="btn btn-outline-light me-3">
+                        <i className="bi bi-linkedin me-1"></i> LinkedIn
                         </a>
 
-                        <a href="https://github.com/KunalVChoudhary" target="_blank" class="btn btn-outline-light">
-                        <i class="bi bi-github me-1"></i> GitHub
+                        <a href="https://github.com/KunalVChoudhary" target="_blank" className="btn btn-outline-light">
+                        <i className="bi bi-github me-1"></i> GitHub
                         </a>
                     </div>
 
