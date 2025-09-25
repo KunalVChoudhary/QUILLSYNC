@@ -52,68 +52,86 @@ function LoginForm({purpose}){
     }
 
   return (
-    <>
-      <Form onSubmit={handleSubmission} className='mx-4 my-5 w-100'>
-        <Form.Group className='d-flex row align-items-center m-0 mb-2'>
-          <div className='col-3 fs-5 p-0'>
-            Email : 
-          </div>
-          <div className='col-9 p-0'>
-            <FloatingLabel controlId="email" label="Email address" className='ps-2'>
-              <Form.Control
-                type="email"
-                placeholder="name@example.com"
-                name="email"
-                value={LoginData.email}
-                required
-                onChange={handleChange} />
-            </FloatingLabel>
-          </div>
-        </Form.Group>
+    <div className='row align-items-center '>
 
-        {(purpose ==='Sign Up') ?
-        <Form.Group className='d-flex row align-items-center m-0 mb-2'>
-          <div className='col-3 fs-5 p-0'>
-              Username : 
-          </div>
-          <div className='col-9 p-0'>
-            <FloatingLabel controlId="username" label="Username" className='ps-2'>
-              <Form.Control
-                type="text"
-                placeholder="username"
-                name="username"
-                value={LoginData.username}
-                required
-                onChange={handleChange} />
-            </FloatingLabel>
-          </div>
-        </Form.Group> : ''
-        }
+        <div className='col-md-6 d-none d-md-block'>
+            <img className="h-100 w-100" src="./assets/app_logo.png" alt="logo" />
+        </div>
 
-        <Form.Group className='d-flex row align-items-center m-0 mb-2'>
-          <div className='col-3 fs-5 p-0'>
-            Password : 
-          </div>
-          <div className='col-9 p-0'>
-            <FloatingLabel controlId="password" label="Password" className='ps-2'>
-              <Form.Control
-                type="password"
-                placeholder="Password"
-                name="password"
-                value={LoginData.password}
-                required
-                onChange={handleChange} />
-            </FloatingLabel>
-          </div>
-        </Form.Group>
-        
-        <Form.Group className=" d-flex align-items-center justify-content-center">
-          <div >
-            <button type="submit" className='mt-2 px-3 btn btn-outline-primary text-white'>{purpose}</button>
-          </div>
-        </Form.Group>
-      </Form>
-    </>
+        <div className='col-md-6 col-12'>
+            <form onSubmit={handleSubmission} className="mx-md-4 my-5 d-flex flex-column justify-content-center">
+                {/* Email */}
+                <div className="d-flex row align-items-center m-0 mb-4">
+                    <div className="col-12 p-0">
+                        <div className="form-floating ps-2">
+                            <input
+                            type="email"
+                            className="form-control"
+                            id="email"
+                            placeholder="name@example.com"
+                            name="email"
+                            value={LoginData.email}
+                            required
+                            onChange={handleChange}
+                            />
+                            <label htmlFor="email">Email address</label>
+                        </div>
+                    </div>
+                </div>
+                {/* Username (only if Sign Up) */}
+                {purpose === 'Sign Up' && (
+                    <div className="d-flex row align-items-center m-0 mb-4">
+                        <div className="col-12 p-0">
+                            <div className="form-floating ps-2">
+                            <input
+                                type="text"
+                                className="form-control"
+                                id="username"
+                                placeholder="username"
+                                name="username"
+                                value={LoginData.username}
+                                required
+                                onChange={handleChange}
+                            />
+                            <label htmlFor="username">Username</label>
+                        </div>
+                    </div>
+                    </div>
+                )}
+                {/* Password */}
+                <div className="d-flex row align-items-center m-0 mb-4">
+                    <div className="col-12 p-0">
+                        <div className="form-floating ps-2">
+                            <input
+                            type="password"
+                            className="form-control"
+                            id="password"
+                            placeholder="Password"
+                            name="password"
+                            value={LoginData.password}
+                            required
+                            onChange={handleChange}
+                            />
+                            <label htmlFor="password">Password</label>
+                        </div>
+                    </div>
+                </div>
+                {/* Submit Buttons */}
+                <div className="d-flex justify-content-center mt-2 mb-4 ">
+                    <button type="submit" className="btn btn-outline-primary border-2 text-white px-4 pt-2">
+                    {purpose}
+                    </button>
+                </div>
+                <div className="d-flex justify-content-center">
+                    {purpose === 'Sign Up'
+                    ? (<p>Create an account? <span className="text-primary text-decoration-underline" onClick={()=>{navigate('/login')}} role="button">Sign in</span></p>)
+                    : (<p>Already have an Account? <span className="text-primary text-decoration-underline" onClick={()=>{navigate('/register')}} role="button">Sign up</span></p>)
+                    }
+                </div>
+            </form>
+        </div>
+
+    </div>
   )
 }
 

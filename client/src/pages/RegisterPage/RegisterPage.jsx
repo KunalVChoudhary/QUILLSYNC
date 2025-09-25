@@ -8,7 +8,7 @@ function RegisterPage({purpose}) {
     <>
       <div>
         <ToastContainer position="top-right" />
-        <div className={`${styles['login-form-container']} d-flex align-items-center`}>
+        <div className={`${styles['login-form-container']} d-flex align-items-center justify-content-center`}>
           <LoginForm purpose={purpose} />
         </div>
       </div>
