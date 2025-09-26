@@ -1,0 +1,47 @@
+.doc-container{
+    height: 25px;
+    margin: 5px 0;
+}
+
+.dot-img{
+    height: 1.2rem;
+    width: 1.2rem;
+    border: 1px solid transparent;
+    border-radius: 50%;
+}
+
+.more-container:hover{
+    div{
+        display: block !important;
+        z-index: 999;
+    }
+
+    div>img{
+        background-color: rgba(255, 255, 255, 0.07); /* semi-transparent */
+        backdrop-filter: blur(10px);
+    }
+}
+
+.scroll-box{
+    height: 750px;
+}
+
+.scroll-box::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  
+}
+
+.scroll-box::-webkit-scrollbar-track {
+  background: #f1f1f1;   /* Track background */
+  border-radius: 4px;
+}
+
+.scroll-box::-webkit-scrollbar-thumb {
+  background: #888;      /* Scroll thumb color */
+  border-radius: 4px;
+}
+
+.scroll-box::-webkit-scrollbar-thumb:hover {
+  background: #555;      /* Scroll thumb on hover */
+}
