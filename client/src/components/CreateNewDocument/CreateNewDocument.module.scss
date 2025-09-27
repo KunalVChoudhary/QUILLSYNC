@@ -1,0 +1,13 @@
+.create-form-container{
+    z-index: 801;
+    border: 2px solid aliceblue;
+    border-radius: 20px;
+    color: aliceblue;
+}
+
+.overlayBackground {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.15);
+    z-index: 800;
+}
