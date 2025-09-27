@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import styles from './DocumentList.module.scss'
+import { useNavigate } from 'react-router-dom'
 
 function DocumentList() {
 
@@ -8,6 +9,8 @@ function DocumentList() {
 
     const [dropdownStateOwnedDocuments, setDropdownStateOwnedDocuments] = useState(false)
     const [dropdownStateCollaboratorDocuments, setDropdownStateCollaboratorDocuments] = useState(false)
+
+    const navigate = useNavigate()
 
     const handleDocumentClick = (docId)=>{
         return
@@ -33,18 +36,18 @@ function DocumentList() {
                     }
                 </div>
             </div>
-
             <div className={`${dropdownStateOwnedDocuments && 'd-none'}`}>
                 {ownedDocumentsArray.map((document,index)=>{
                     return (
-                        <div  className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={handleDocumentClick}>
+                        <div key={index} className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={handleDocumentClick}>
                             <div className='text-truncate h-100'>
                                 {index+1}• {document[1]}
                             </div>
                             <div className={`${styles['more-container']} d-flex flex-column align-items-end h-100`}>
                                 <div className='h-100'><img className={`${styles['dot-img']}`} src="./assets/dot-32.png" alt="more" /></div>
-                                <div className=' d-none h-100'>{document[2]}</div>
+                                <div className='d-none border border-2 border-white rounded px-2 py-1 bg-black bg-gradient' onClick={()=>{navigate(`/user/doc/edit/${document[0]}`)}}>Edit</div>
                             </div>
+                            {/* Delete the doc */}
                         </div>
                     )
                 })}
@@ -68,13 +71,13 @@ function DocumentList() {
             <div className={`${dropdownStateCollaboratorDocuments && 'd-none'}`}>
                 {collaboratorDocumentsArray.map((document,index)=>{
                     return (
-                        <div  className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={handleDocumentClick}>
+                        <div key={index} className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={handleDocumentClick}>
                             <div className='text-truncate h-100'>
                                 {index+1}• {document[1]}
                             </div>
                             <div className={`${styles['more-container']} d-flex flex-column align-items-end h-100`}>
                                 <div className='h-100'><img className={`${styles['dot-img']}`} src="./assets/dot-32.png" alt="more" /></div>
-                                <div className=' d-none h-100'>{document[2]}</div>
+                                <div className='d-none border border-2 border-white rounded px-2 py-1 bg-black bg-gradient'>{document[2]}</div>
                             </div>
                         </div>
                     )
