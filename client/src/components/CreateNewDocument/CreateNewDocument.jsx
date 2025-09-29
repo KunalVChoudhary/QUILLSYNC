@@ -52,7 +52,7 @@ function CreateNewDocument() {
 
     return (
         <>
-            <div className='d-flex justify-content-between text-white px-2 mt-2'>
+            <div className='d-flex justify-content-between text-white px-2 mt-2 border border-white mb-2'>
                 <div className='h5 m-0'> Documents </div>
                 <div className='pe-3' data-bs-toggle="tooltip" data-bs-placement="bottom" title="New Document">
                     <i onClick={()=>setCreateDoc(true)} className="bi bi-file-earmark-richtext"></i>
