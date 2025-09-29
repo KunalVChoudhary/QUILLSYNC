@@ -21,7 +21,7 @@ function DocumentList() {
     },[])
     
     return (
-        <div className={`${styles['scroll-box']} overflow-y-scroll text-white`}>
+        <div className={`${styles['scroll-box']} flex-grow-1 overflow-y-scroll text-white`}>
 
             {/* dono array pe map loop chalao */}
             <div className={`${styles['doc-container']} d-flex justify-content-between px-2 my-2`}>
