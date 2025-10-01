@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URL).then((err)=>{
     })
 
 // websocket server
-connectWebSocket()
+connectWebSocket(server)
 
 //middlewares
 app.use(express.json());
