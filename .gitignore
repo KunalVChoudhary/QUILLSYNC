@@ -19,6 +19,7 @@ client/.DS_Store
 client/dist/
 client/.vite/
 client/coverage/
+client/public/images
 
 # Express (server/)
 server/node_modules/
