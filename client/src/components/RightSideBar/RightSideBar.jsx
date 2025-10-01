@@ -6,8 +6,13 @@ import * as Y from 'yjs'
 import { QuillBinding } from 'y-quill'
 import { WebsocketProvider } from 'y-websocket'
 import './RightSideBar.scss'
+import { useSearchParams } from 'react-router-dom';
 
-function RightSideBar() {
+function RightSideBar({docId}) {
+
+    if (!docId){
+        return <></>
+    }
     
     const editorRef = useRef(null);  // 1. Create a ref for the editor container
     const quillRef = useRef(null);
@@ -41,7 +46,7 @@ function RightSideBar() {
                 const binding = new QuillBinding(ytext, quillRef.current)
 
                 const provider = new WebsocketProvider(
-        'wss://demos.yjs.dev/ws', 'quill-demo-room', ydoc
+        import.meta.VITE_WS_URL, docId, ydoc
         )
         }
     }, []);
