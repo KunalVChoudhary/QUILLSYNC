@@ -1,5 +1,5 @@
 
-const { setupWSConnection } = require('y-websocket/bin/utils.js')
+const { setupWSConnection } = require('y-websocket')
 const WebSocket = require('ws')
 const { Doc, encodeStateAsUpdate, applyUpdate } = require("yjs");
 const Document = require("../models/document");
@@ -52,7 +52,7 @@ async function saveDocToMongo(docName, ydoc) {
   await Document.findByIdAndUpdate(docName,{content:update, lastEdited:Date.now()});
 }
 
-function connectWebSocket(){
+function connectWebSocket(server){
     const wss = new WebSocket.Server({ server })
     const documentConnectionMap = new Map();
 
