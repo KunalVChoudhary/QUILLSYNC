@@ -8,6 +8,7 @@ function Navbar(){
 
     const navigate = useNavigate()
     const {user} = useAuth()
+    console.log(user);
     const userimage = false
     const location = useLocation();
     const pathSegments = location.pathname.split('/').filter(segment => segment);
@@ -34,7 +35,7 @@ function Navbar(){
                         (
                             <div className={`${styles['profile-container']} d-flex flex-column h-100 align-items-center fs-4`}>
                                 <div className={`d-flex align-items-center gap-2 h-100 px-3`}>
-                                    <img className={` d-block h-75`} src={userimage? "profileImage" : "./images/assets/avatar_icon.png"} alt="avtar" />
+                                    <img className={` d-block h-75`} src={userimage? "profileImage" : "./assets/avatar_icon.png"} alt="avtar" />
                                     <div>{user.length<=5? user : user.slice(0,5).concat('')}</div>
                                 </div>
                                 <div className={`${styles['dropdown-list']} flex-column h-auto w-100 border border-1 rounded fs-5`}>
