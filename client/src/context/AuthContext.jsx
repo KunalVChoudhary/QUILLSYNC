@@ -2,8 +2,9 @@ import { createContext, useContext, useState } from "react";
 
 export const AuthContext = createContext();
 
-export default function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);
+export function AuthProvider({ children }) {
+  const storedUser = localStorage.getItem('quillsyncApp');
+  const [user, setUser] = useState(storedUser ? JSON.parse(storedUser)?.user : null );
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
