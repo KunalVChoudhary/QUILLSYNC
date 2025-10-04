@@ -15,7 +15,6 @@ export default function useUserLogout(){
             const data = await response.json()
             if (response.ok){
                 toast.success(data.message)
-                localStorage.removeItem('quillsyncApp')
                 setUser(null)
                 setTimeout(()=> navigate('/'),2000)
             }else{

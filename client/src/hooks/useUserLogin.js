@@ -22,7 +22,6 @@ export default function useUserLogin(){
         const data = await response.json()
         if (response.ok){
             toast.success(data.message)
-            localStorage.setItem('quillsyncApp',JSON.stringify({'user':data.username}))
             setUser(data.username)
             setTimeout(()=> navigate('/'),2000)
         } else if (response.status===400){
