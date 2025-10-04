@@ -74,5 +74,20 @@ const handleUserLogout = (req, res) => {
     }
 };
 
+//used in check auth
+const checker=async(req,res)=>{
+    try {
+        const user = await User.findById(req.user.userId)
+        if (user){
+            return res.status(200).json({username:user.username})
+        }
+        else{
+            return res.status(400).json('USer doesnt exist')
+        }
+    } catch (error) {
+        return res.status(500).json({ message: "Server Error" });
+    }
+}
 
-module.exports={handleUserRegister,handleUserLogin,handleUserLogout}
+
+module.exports={handleUserRegister,handleUserLogin,handleUserLogout,checker}
