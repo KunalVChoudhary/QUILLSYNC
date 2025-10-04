@@ -1,25 +1,57 @@
 import { useEffect, useState } from 'react'
 import styles from './DocumentList.module.scss'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import useGetUserDocs from '../../hooks/useGetUserDocs'
 
 function DocumentList() {
 
-    const [ownedDocumentsArray, setOwnedDocumentsArray] = useState([['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef']])
-    const [collaboratorDocumentsArray, setCollaboratorDocumentsArray] = useState([['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef']])
+    // const [ownedDocumentsArray, setOwnedDocumentsArray] = useState([['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef']])
+    // const [collaboratorDocumentsArray, setCollaboratorDocumentsArray] = useState([['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef']])
 
+    const {ownedDocuments, collaboratorDocuments, fetchError, loading, getUserDocs} = useGetUserDocs()
     const [dropdownStateOwnedDocuments, setDropdownStateOwnedDocuments] = useState(false)
     const [dropdownStateCollaboratorDocuments, setDropdownStateCollaboratorDocuments] = useState(false)
 
     const navigate = useNavigate()
 
+    const [searchParams, setSearchParams] = useSearchParams()
+
     const handleDocumentClick = (docId)=>{
-        return
+        setSearchParams({docId})
     }
 
     useEffect(()=>{
         //fetch documents from the server
+        getUserDocs()
     },[])
-    
+    if (loading){
+        return (
+            <div className={`${styles['scroll-box']} flex-grow-1 overflow-y-scroll`}>
+                <div className='d-flex justify-content-center align-items-center h-100 w-100'>
+                    <div className="spinner-border text-light" role="status">
+                        <span className="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        )
+    } else if (fetchError){
+        return (
+            <div className={`${styles['scroll-box']} flex-grow-1 overflow-y-scroll text-white`}>
+                <div className='d-flex flex-column gap-0 justify-content-center align-items-center h-100 w-100'>
+                    <p className='m-0 p-1'>{fetchError}</p>
+                    <p className='m-0 p-1'>Please Reload the page</p>
+                </div>
+            </div>
+        )
+    } else if (ownedDocuments.length == 0  && collaboratorDocuments.length == 0){
+        return (
+            <div className={`${styles['scroll-box']} flex-grow-1 overflow-y-scroll text-white`}>
+                <div className='d-flex flex-column gap-0 justify-content-center align-items-center h-100 w-100'>
+                    <p className='m-0 p-1'>Create a new Document</p>
+                </div>
+            </div>
+        )
+    }
     return (
         <div className={`${styles['scroll-box']} flex-grow-1 overflow-y-scroll text-white`}>
 
@@ -37,9 +69,9 @@ function DocumentList() {
                 </div>
             </div>
             <div className={`${dropdownStateOwnedDocuments && 'd-none'}`}>
-                {ownedDocumentsArray.map((document,index)=>{
+                {ownedDocuments.map((document,index)=>{
                     return (
-                        <div key={index} className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={handleDocumentClick}>
+                        <div key={index} className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={() => handleDocumentClick(document[0])}>
                             <div className='text-truncate h-100'>
                                 {index+1}• {document[1]}
                             </div>
@@ -69,9 +101,9 @@ function DocumentList() {
             </div>
 
             <div className={`${dropdownStateCollaboratorDocuments && 'd-none'}`}>
-                {collaboratorDocumentsArray.map((document,index)=>{
+                {collaboratorDocuments.map((document,index)=>{
                     return (
-                        <div key={index} className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={handleDocumentClick}>
+                        <div key={index} className={` ${styles['doc-container']} d-flex justify-content-between px-2`} onClick={() => handleDocumentClick(document[0])}>
                             <div className='text-truncate h-100'>
                                 {index+1}• {document[1]}
                             </div>
