@@ -6,14 +6,9 @@ import * as Y from 'yjs'
 import { QuillBinding } from 'y-quill'
 import { WebsocketProvider } from 'y-websocket'
 import './RightSideBar.scss'
-import { useSearchParams } from 'react-router-dom';
 
 function RightSideBar({docId}) {
 
-    if (!docId){
-        return <></>
-    }
-    
     const editorRef = useRef(null);  // 1. Create a ref for the editor container
     const quillRef = useRef(null);
 
@@ -45,13 +40,20 @@ function RightSideBar({docId}) {
                 // "binds" the quill editor to a Y.Text type.
                 const binding = new QuillBinding(ytext, quillRef.current)
 
-                const provider = new WebsocketProvider(
-        import.meta.VITE_WS_URL, docId, ydoc
-        )
+                const provider = new WebsocketProvider(import.meta.env.VITE_WS_URL, docId, ydoc)
         }
-    }, []);
+    }, [docId]);
 
-
+    if (!docId){
+        return (
+        <>
+            <div className='h-100 col-9 d-flex justify-content-center align-items-center text-white'>
+                <p className='fs-4'>QuillSync</p>
+            </div>
+        </>
+    )
+    }
+    
     return (
         <div className={`right-sidebar h-100 col-9 d-flex flex-column text-white`}>
             <div className={`editor-container h-100 flex-grow-1`} ref={editorRef}>
