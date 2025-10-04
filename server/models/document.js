@@ -6,8 +6,8 @@ const documentSchema = new Schema({
         required:true
     },
     content:{
-        type:String,
-        default:'',
+        type:Buffer,
+        default:null,
     },
     owner:{
         type:Schema.Types.ObjectId,
