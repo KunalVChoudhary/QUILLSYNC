@@ -14,10 +14,5 @@ const userAuthorization=(req,res,next)=>{
         return res.status(401).json({ message: 'Invalid or expired token' });
     }
 }
-    
-//after middleware next call this
-const checker=(req,res)=>{
-    return res.status(200).json({message:`${req.user.userId}`})
-}
 
-module.exports={userAuthorization,checker}
+module.exports={userAuthorization}
