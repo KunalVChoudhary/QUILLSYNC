@@ -8,7 +8,7 @@ const documentAuthorizationCheck = async (req,res,next)=>{
         if (!document){
             return res.status(404).json({message:'Document not found'})
         }
-        if ((req.user.userId.toString() != document.owner.toString()) && (!document.collaborators.some(id => id.toString() === req.user.toString()))){
+        if ((req.user.userId.toString() != document.owner.toString()) && (!document.collaborators.some(id => id.toString() === req.user.userId.toString()))){
             const err= new Error('Not Authorized To Access')
             err.name='NotAuthorized'
             throw err
