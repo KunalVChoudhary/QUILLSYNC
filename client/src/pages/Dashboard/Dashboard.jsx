@@ -1,22 +1,19 @@
-import {} from 'react'
 import styles from './Dashboard.module.scss'
-
-import React from 'react'
 import LeftSideBar from '../../components/LeftSideBar/LeftSideBar'
 import Navbar from '../../components/Navbar/Navbar'
 import RightSideBar from '../../components/RightSideBar/RightSideBar'
+import { useSearchParams } from 'react-router-dom'
 
 function Dashboard() {
 
-  const searchParms = useSearchParams()
-  if (!searchParms.docId){}
+  const [searchParams, setSearchParams] = useSearchParams()
 
   return (
     <>
       <Navbar />
       <div className={` ${styles['container']} row`}>
           <LeftSideBar />
-          <RightSideBar docId={searchParms.docId} />
+          <RightSideBar docId={searchParams.has('docId') ? searchParams.get('docId') : false} />
       </div>
     </>
   )
