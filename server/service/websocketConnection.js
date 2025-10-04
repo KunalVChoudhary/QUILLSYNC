@@ -1,7 +1,7 @@
-
-const { setupWSConnection } = require('y-websocket')
+const { setupWSConnection } = require('y-websocket/bin/utils')
 const WebSocket = require('ws')
 const { Doc, encodeStateAsUpdate, applyUpdate } = require("yjs");
+const cookie = require('cookie')
 const Document = require("../models/document");
 const { userAuthorization } = require("../middleware/userAuthorization.js")
 const { documentAuthorizationCheck } = require("../middleware/documentAuthorizationCheck.js");
@@ -39,8 +39,8 @@ async function loadDocFromMongo(docName) {
   const ydoc = new Doc();
   const record = await Document.findById(docName);
 
-  if (record) {
-    applyUpdate(ydoc, record.content); // apply stored state to new Y.Doc
+  if (record && record.content) {
+    applyUpdate(ydoc, new Uint8Array(record.content)); // apply stored state to new Y.Doc
   }
 
   return ydoc;
@@ -49,7 +49,7 @@ async function loadDocFromMongo(docName) {
 
 async function saveDocToMongo(docName, ydoc) {
   const update = encodeStateAsUpdate(ydoc); // binary Uint8Array
-  await Document.findByIdAndUpdate(docName,{content:update, lastEdited:Date.now()});
+  await Document.findByIdAndUpdate(docName,{content:Buffer.from(update), lastEdited:Date.now()});
 }
 
 function connectWebSocket(server){
@@ -58,6 +58,7 @@ function connectWebSocket(server){
 
     wss.on("connection", async (socket, req) => {
         
+      try{
         //websocket request me req.cookies nhi hota hai
         req.cookies = cookie.parse(req.headers.cookie || "");
         await runMiddleware(userAuthorization,req,socket)
@@ -67,7 +68,6 @@ function connectWebSocket(server){
         //websocket request me req.params nhi hota hai
         req.params = {docId:docName}
         await runMiddleware(documentAuthorizationCheck,req,socket)
-
 
         const docConnections = documentConnectionMap.get(docName) || new Set();
         docConnections.add(socket);
@@ -93,6 +93,10 @@ function connectWebSocket(server){
                 }
             }
         });
+      }catch (error){
+        console.error("WebSocket connection error:", error.message);
+        socket.close()
+      }
     });
 }
 
