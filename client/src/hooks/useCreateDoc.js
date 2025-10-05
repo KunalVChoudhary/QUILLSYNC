@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
+import { useAuth } from "./useAuth"
 
 export default function useCreateDoc() {
     const [loading, setLoading] = useState(false);
     const abortControllerRef = useRef(null);
+    const { setReloader } = useAuth()
 
     useEffect(() => {
         // On component unmount, abort the request
@@ -50,6 +52,7 @@ export default function useCreateDoc() {
             return { success: false, error: error.message };
         } finally {
             setLoading(false);
+            setReloader(prev=>prev+1)
         }
     };
 
