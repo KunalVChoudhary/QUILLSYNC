@@ -14,11 +14,6 @@
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
-// .app-icon{
-//     height: 65px;
-//     width: 65px;
-// }
-
 .container-2>div{
     border: 2px solid transparent;
 }
@@ -30,6 +25,10 @@
 
 .dropdown-list{
     display: none;   
+}
+
+.profile-container{
+    min-width: 130px;
 }
 
 .profile-container:hover{

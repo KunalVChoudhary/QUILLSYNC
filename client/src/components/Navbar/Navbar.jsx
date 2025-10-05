@@ -8,7 +8,6 @@ function Navbar(){
 
     const navigate = useNavigate()
     const {user} = useAuth()
-    console.log(user);
     const userimage = false
     const location = useLocation();
     const pathSegments = location.pathname.split('/').filter(segment => segment);
