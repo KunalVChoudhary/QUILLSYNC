@@ -2,13 +2,14 @@ import { useEffect, useState } from 'react'
 import styles from './DocumentList.module.scss'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import useGetUserDocs from '../../hooks/useGetUserDocs'
+import useDeleteDoc from '../../hooks/useDeleteDoc'
+import { useAuth } from '../../hooks/useAuth'
 
 function DocumentList() {
 
-    // const [ownedDocumentsArray, setOwnedDocumentsArray] = useState([['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef']])
-    // const [collaboratorDocumentsArray, setCollaboratorDocumentsArray] = useState([['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef'],['asfdvrv','cawerfhbchbwkrevbeui wneocinono','fwef']])
-
+    const {reloader} = useAuth()
     const {ownedDocuments, collaboratorDocuments, fetchError, loading, getUserDocs} = useGetUserDocs()
+    const {deleteDocument} = useDeleteDoc()
     const [dropdownStateOwnedDocuments, setDropdownStateOwnedDocuments] = useState(false)
     const [dropdownStateCollaboratorDocuments, setDropdownStateCollaboratorDocuments] = useState(false)
 
@@ -23,7 +24,7 @@ function DocumentList() {
     useEffect(()=>{
         //fetch documents from the server
         getUserDocs()
-    },[])
+    },[reloader])
     if (loading){
         return (
             <div className={`${styles['scroll-box']} flex-grow-1 overflow-y-scroll`}>
@@ -75,9 +76,13 @@ function DocumentList() {
                             <div className='text-truncate h-100'>
                                 {index+1}• {document[1]}
                             </div>
-                            <div className={`${styles['more-container']} d-flex flex-column align-items-end h-100`}>
+                            <div className={`${styles['more-container']} d-flex flex-column align-items-end h-100 w-auto`}>
                                 <div className='h-100'><img className={`${styles['dot-img']}`} src="./assets/dot-32.png" alt="more" /></div>
-                                <div className='d-none border border-2 border-white rounded px-2 py-1 bg-black bg-gradient' onClick={()=>{navigate(`/user/doc/edit/${document[0]}`)}}>Edit</div>
+                                <div className='d-none border border-2 border-white rounded px-2 py-1 bg-black w-100'>    
+                                    <div className='p-1' onClick={()=>{navigate(`/user/doc/edit/${document[0]}`)}}>Edit</div>
+                                    <hr className='m-0' />
+                                    <div className='p-1' onClick={()=>deleteDocument(document[0])}>Delete</div>
+                                </div>
                             </div>
                             {/* Delete the doc */}
                         </div>
