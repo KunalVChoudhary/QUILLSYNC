@@ -116,7 +116,7 @@ function RightSideBar({docId}) {
             )
             : (
                 <div className='h-100 d-flex justify-content-center align-items-center text-white'>
-                    <p className='fs-4'>QuillSync</p>
+                    <img className='h-75' src='./assets/app_logo.png' alt="logo" />
                 </div>
             )
             }
