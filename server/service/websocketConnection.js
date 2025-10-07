@@ -40,9 +40,9 @@ async function loadDocFromMongo(docName) {
   const record = await Document.findById(docName);
 
   if (record && record.content) {
-    applyUpdate(ydoc, new Uint8Array(record.content)); // apply stored state to new Y.Doc
+    const update = new Uint8Array(record.content.buffer, record.content.byteOffset, record.content.length);
+    applyUpdate(ydoc, update); // apply stored state to new Y.Doc
   }
-
   return ydoc;
 }
 
@@ -50,6 +50,7 @@ async function loadDocFromMongo(docName) {
 async function saveDocToMongo(docName, ydoc) {
   const update = encodeStateAsUpdate(ydoc); // binary Uint8Array
   await Document.findByIdAndUpdate(docName,{content:Buffer.from(update), lastEdited:Date.now()});
+  return
 }
 
 function connectWebSocket(server){
