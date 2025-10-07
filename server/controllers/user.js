@@ -12,8 +12,8 @@ const handleUserRegister=async(req,res,next)=>{
         const jwtToken = setJWT(user)
         res.cookie('token', jwtToken, {
             httpOnly: true,      
-            //secure: true,        
-            //sameSite: 'Strict', 
+            secure: true,        
+            sameSite: 'None', 
             maxAge: 3600000*24      
         });
         res.status(200).json({message:"Registeration Successfull", username:user.username})
@@ -46,8 +46,8 @@ const handleUserLogin=async(req,res,next)=>{
         const jwtToken = setJWT(user)
         res.cookie('token', jwtToken, {
             httpOnly: true,      
-            //secure: true,        
-            //sameSite: 'Strict', 
+            secure: true,        
+            sameSite: 'None', 
             maxAge: 3600000*24      
         });
 
@@ -64,8 +64,8 @@ const handleUserLogout = (req, res) => {
     try{
         res.clearCookie('token', {
         httpOnly: true,
-        // secure: true,        // Uncomment this if you're using HTTPS
-        // sameSite: 'Strict'   // Match the original settings if needed
+        secure: true,       
+        sameSite: 'None'  
     });
     res.status(200).json({ message: "Logout successful" });
     }
