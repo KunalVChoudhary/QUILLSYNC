@@ -67,10 +67,7 @@ async function saveDocToMongo(docId, ydoc) {
       docId,
       { content: buffer, lastEdited: new Date() },
       { upsert: true }
-    );
-    
-    console.log(`[SAVE] Saved document ${docId} (${update.length} bytes)`);
-    
+    );    
   } catch (error) {
     console.error(`[SAVE] Error saving document ${docId}:`, error.message);
   }
@@ -95,7 +92,6 @@ function attachListenersToActualDoc(docId, intendedLocalYDoc, mapDocs, autosaveI
     if (loadedState.length > existingState.length) {
       try {
         Y.applyUpdate(serverDoc, loadedState);
-        console.log(`[ATTACH] Merged ${loadedState.length} bytes into server doc ${docId}`);
       } catch (error) {
         console.error(`[ATTACH] Error merging state for ${docId}:`, error.message);
       }
@@ -117,13 +113,11 @@ function attachListenersToActualDoc(docId, intendedLocalYDoc, mapDocs, autosaveI
 
 function connectWebSocket(server) {
   const wss = new WebSocket.Server({ server });
-  console.log('[WS] WebSocket server started');
 
   const userCountDocMap = new Map();
   const mapDocs = new Map();
 
   wss.on('connection', async (socket, req) => {
-    const connectionId = Math.random().toString(36).substr(2, 9);
     let docId;
     
     try {
@@ -142,78 +136,23 @@ function connectWebSocket(server) {
       const userCount = userCountDocMap.get(docId) || 0;
       userCountDocMap.set(docId, userCount + 1);
 
-      // Load document from database
       const intendedLocalYDoc = await loadDocFromMongo(docId);
 
+      setupWSConnection(socket, req, {
+        docName: docId,
+        getYDoc: () => intendedLocalYDoc
+      });
+
       if (userCount === 0) {
-        // First user - setup normally
-        console.log(`[WS] First user connecting to ${docId}`);
-        
-        setupWSConnection(socket, req, {
-          docName: docId,
-          getYDoc: () => intendedLocalYDoc
-        });
-        
         attachListenersToActualDoc(docId, intendedLocalYDoc, mapDocs);
-        
-      } else {
-        // Additional user - ensure server doc is ready first
-        console.log(`[WS] Additional user (#${userCount + 1}) connecting to ${docId}`);
-        
-        const internalDocs = wsUtils['docs'];
-        let serverDoc = internalDocs?.get(docId);
-        
-        if (serverDoc) {
-          const serverState = encodeStateAsUpdate(serverDoc);
-          const loadedState = encodeStateAsUpdate(intendedLocalYDoc);
-          
-          console.log(`[WS] Server: ${serverState.length} bytes, Loaded: ${loadedState.length} bytes`);
-          
-          // Merge loaded state into server doc if newer
-          if (loadedState.length > serverState.length) {
-            try {
-              Y.applyUpdate(serverDoc, loadedState);
-              console.log(`[WS] Updated server doc with fresh DB state (${loadedState.length} bytes)`);
-            } catch (error) {
-              console.error(`[WS] Error merging fresh state:`, error.message);
-            }
-          }
-          
-          // Use the ready server doc
-          setupWSConnection(socket, req, {
-            docName: docId,
-            getYDoc: () => serverDoc  // ✅ Use server doc with merged state
-          });
-          
-        } else {
-          console.warn(`[WS] No server doc found for ${docId}, using fallback`);
-          // Fallback
-          setupWSConnection(socket, req, {
-            docName: docId,
-            getYDoc: () => intendedLocalYDoc
-          });
-        }
       }
 
-      console.log(`[WS] Client connected to document ${docId} (${userCount + 1} users)`);
-
-      // Keep WebSocket alive (Render.com fix)
-      const pingInterval = setInterval(() => {
-        if (socket.readyState === WebSocket.OPEN) {
-          socket.ping();
-        }
-      }, 30000);
-
       socket.on('close', async () => {
-        clearInterval(pingInterval);
-        
         const currentUserCount = userCountDocMap.get(docId);
         if (!currentUserCount) return;
         
         const newUserCount = currentUserCount - 1;
         userCountDocMap.set(docId, newUserCount);
-        
-        console.log(`[WS] Client disconnected from ${docId} (${newUserCount} users remaining)`);
         
         if (newUserCount === 0) {
           const docData = mapDocs.get(docId);
@@ -223,14 +162,12 @@ function connectWebSocket(server) {
               clearInterval(docData.interval);
             }
             mapDocs.delete(docId);
-            console.log(`[WS] Document ${docId} removed from memory`);
           }
           userCountDocMap.delete(docId);
         }
       });
 
       socket.on('error', (err) => {
-        clearInterval(pingInterval);
         console.error(`[WS] Socket error for ${docId}:`, err.message);
       });
 
