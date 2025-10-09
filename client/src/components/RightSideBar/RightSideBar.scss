@@ -45,3 +45,8 @@
 .ql-editor.ql-blank::before {
   color: #aaa;
 }
+
+.loader-container{
+  background-color: 'rgba(0,0,0,0.8)';
+  z-index: 10;
+}
