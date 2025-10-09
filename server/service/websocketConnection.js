@@ -233,7 +233,8 @@ function connectWebSocket(server) {
       console.log(`[WS-SETUP-START] ${connectionId} | ${docId} | Calling setupWSConnection`);
       const setupStartTime = Date.now();
       setupWSConnection(socket, req, {
-        docName: docId
+        docName: docId,
+        getYDoc: () => {return intendedLocalYDoc}
       });
       const setupDuration = Date.now() - setupStartTime;
       console.log(`[WS-SETUP-END] ${connectionId} | ${docId} | Setup time: ${setupDuration}ms`);
