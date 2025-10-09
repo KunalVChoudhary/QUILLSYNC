@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Quill from 'quill'
 import 'quill/dist/quill.snow.css';
 import * as Y from 'yjs'
@@ -9,54 +9,52 @@ import { useAuth } from "../../hooks/useAuth"
 import QuillCursors from 'quill-cursors'
 Quill.register('modules/cursors', QuillCursors)
 
+function getRandomColor() {
+    const colors = [
+        '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8',
+        '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B195', '#C06C84',
+        '#6C5B7B', '#355C7D', '#F67280', '#C06C84', '#F38181',
+        '#AA96DA', '#FCBAD3', '#FFFFD2', '#A8D8EA', '#FFCFDF'
+    ];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
 function RightSideBar({docId}) {
     const editorRef = useRef(null);
     const quillRef = useRef(null);
     const providerRef = useRef(null);
+    
+    // ✅ Simple loading state
+    const [isLoading, setIsLoading] = useState(true);
 
     const {user} = useAuth();
 
     useEffect(() => {
-        if (!docId) {
-            console.log('[CLIENT] No docId provided');
-            return;
-        }
+        if (!docId) return;
+
+        setIsLoading(true);
 
         if (editorRef.current && !quillRef.current) {
-            console.log('[CLIENT-INIT] Starting initialization for docId:', docId);
-
-            // Create Y.Doc
             const ydoc = new Y.Doc();
-            console.log('[CLIENT-YDOC] Y.Doc created, guid:', ydoc.guid);
-
-            // Create WebSocket Provider with resync interval (backup fix)
+            
             const provider = new WebsocketProvider(
                 import.meta.env.VITE_WS_URL, 
                 docId, 
                 ydoc,
                 {
-                    resyncInterval: 5000  // ✅ Resync every 5 seconds as backup
+                    resyncInterval: 3000
                 }
             );
             providerRef.current = provider;
 
-            // Monitor connection status
-            provider.on('status', ({ status }) => {
-                console.log('[CLIENT-WS-STATUS] Connection status:', status);
-            });
-
-            // Set up awareness
             const awareness = provider.awareness;
             awareness.setLocalStateField('user', {
                 name: user,
-                color: '#ffb61e'
+                color: getRandomColor()
             });
 
-            // Get shared text type
             const ytext = ydoc.getText('quill');
-            console.log('[CLIENT-YTEXT] Initial ytext length:', ytext.length);
 
-            // Create Quill editor
             const quill = new Quill(editorRef.current, {
                 theme: 'snow',
                 placeholder: 'Start typing...',
@@ -68,37 +66,14 @@ function RightSideBar({docId}) {
             });
             quillRef.current = quill;
 
-            // Create binding
             const binding = new QuillBinding(ytext, quill, awareness);
-            
-            // Monitor sync events
-            provider.on('sync', (isSynced) => {
-                console.log('[CLIENT-SYNC] Synced:', isSynced);
-                if (isSynced) {
-                    console.log('[CLIENT-SYNC] Document state:', {
-                        ytextLength: ytext.length,
-                        quillLength: quill.getLength(),
-                        docStateSize: Y.encodeStateAsUpdate(ydoc).length
-                    });
-                }
-            });
 
-            // Monitor document updates
-            ydoc.on('update', (update, origin) => {
-                console.log('[CLIENT-YDOC-UPDATE] Update received:', {
-                    updateSize: update.length,
-                    ytextLength: ytext.length,
-                    docStateSize: Y.encodeStateAsUpdate(ydoc).length,
-                    hasOrigin: !!origin
-                });
-            });
-
-            console.log('[CLIENT-INIT] Initialization complete for docId:', docId);
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 3000);
         }
 
         return () => {
-            console.log('[CLIENT-CLEANUP] Cleaning up for docId:', docId);
-            
             if (editorRef.current) {
                 editorRef.current.innerHTML = '';
             }
@@ -122,8 +97,25 @@ function RightSideBar({docId}) {
             {
                 docId 
                 ? (
-                    <div className={`h-100 d-flex flex-column text-white`}>
-                        <div className={`editor-container h-100 flex-grow-1`} ref={editorRef}>
+                    <div className={`h-100 d-flex flex-column text-white position-relative`}>
+
+                        {isLoading && (
+                            <div className='position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center' style={{backgroundColor: 'rgba(0,0,0,0.8)', zIndex: 10}}>
+                                <div className='d-flex justify-content-center align-items-center gap-2'>
+                                    <div className="spinner-grow text-light" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                    <div className="spinner-grow text-light" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                    <div className="spinner-grow text-light" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        
+                        <div className='editor-container h-100 flex-grow-1' ref={editorRef} >
                             {/* Quill editor will be initialized here */}
                         </div>
                     </div>
