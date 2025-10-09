@@ -1,104 +1,177 @@
-const { setupWSConnection } = require('y-websocket/bin/utils')
-const WebSocket = require('ws')
-const { Doc, encodeStateAsUpdate, applyUpdate } = require("yjs");
-const cookie = require('cookie')
-const Document = require("../models/document");
-const { userAuthorization } = require("../middleware/userAuthorization.js")
-const { documentAuthorizationCheck } = require("../middleware/documentAuthorizationCheck.js");
+const WebSocket = require('ws');
+const wsUtils = require('y-websocket/bin/utils');
+const { setupWSConnection } = wsUtils;
+const Y = require('yjs');
+const { encodeStateAsUpdate } = require('yjs');
+const Document = require('../models/document');
+const cookie = require('cookie');
+const { userAuthorization } = require('../middleware/userAuthorization');
+const { documentAuthorizationCheck } = require('../middleware/documentAuthorizationCheck');
 
 function runMiddleware(middleware, req, socket) {
   return new Promise((resolve, reject) => {
-    // socket connection request me response object nhi milta
     const fakeRes = {
       status: (code) => ({
         json: (obj) => {
-          reject(new Error(obj.message || "Unauthorized"));
-          socket.close(); // agar error, to socket close
+          reject(new Error(obj.message || 'Unauthorized'));
+          try { socket.close(); } catch (e) {}
         },
       }),
     };
-
-    // Middleware call karte hain
-    middleware(req, fakeRes, (err) => {
-      // next ko handle karna hai
-
-      if (err) {
-        // Agar middleware next(err) call kare to:
-        reject(err);
-        socket.close();
-      } else {
-        // Agar middleware ne simply next() call kiya to:
-        resolve();
-      }
-    });
+    try {
+      middleware(req, fakeRes, (err) => {
+        if (err) { 
+          reject(err); 
+          try { socket.close(); } catch (e) {} 
+        } else {
+          resolve();
+        }
+      });
+    } catch (e) {
+      reject(e);
+      try { socket.close(); } catch (er) {}
+    }
   });
 }
 
+async function loadDocFromMongo(docId) {
+  try {
+    const record = await Document.findById(docId).lean().exec();
+    const ydoc = new Y.Doc();
 
-async function loadDocFromMongo(docName) {
-  const ydoc = new Doc();
-  const record = await Document.findById(docName);
-
-  if (record && record.content) {
-    const update = new Uint8Array(record.content.buffer, record.content.byteOffset, record.content.length);
-    applyUpdate(ydoc, update); // apply stored state to new Y.Doc
-  }
-  return ydoc;
-}
-
-
-async function saveDocToMongo(docName, ydoc) {
-  const update = encodeStateAsUpdate(ydoc); // binary Uint8Array
-  await Document.findByIdAndUpdate(docName,{content:Buffer.from(update), lastEdited:Date.now()});
-  return
-}
-
-function connectWebSocket(server){
-    const wss = new WebSocket.Server({ server })
-    const documentConnectionMap = new Map();
-
-    wss.on("connection", async (socket, req) => {
-        
-      try{
-        //websocket request me req.cookies nhi hota hai
-        req.cookies = cookie.parse(req.headers.cookie || "");
-        await runMiddleware(userAuthorization,req,socket)
-        
-        const docName = req.url.slice(1);
-
-        //websocket request me req.params nhi hota hai
-        req.params = {docId:docName}
-        await runMiddleware(documentAuthorizationCheck,req,socket)
-
-        const docConnections = documentConnectionMap.get(docName) || new Set();
-        docConnections.add(socket);
-        documentConnectionMap.set(docName, docConnections);
-
-        // Load from Mongo
-        const ydoc = await loadDocFromMongo(docName);
-
-        // Setup Y.js sync
-        setupWSConnection(socket, req, {
-            docName,
-            getYDoc: () => ydoc,
-        });
-
-        // When last user disconnects → save state
-        socket.on("close", async () => {
-            const conns = documentConnectionMap.get(docName);
-            if (conns) {
-                conns.delete(socket);
-                if (conns.size === 0) {
-                    console.log(`All users left ${docName}, saving...`);
-                    await saveDocToMongo(docName, ydoc);
-                }
-            }
-        });
-      }catch (error){
-        console.error("WebSocket connection error:", error.message);
-        socket.close()
+    if (record && record.content) {
+      let buf = (record.content instanceof Buffer) 
+        ? record.content 
+        : (record.content.buffer !== undefined) 
+          ? Buffer.from(record.content.buffer)
+          : Buffer.from(record.content);
+          
+      if (buf.length > 0) {
+        const update = new Uint8Array(buf);
+        Y.applyUpdate(ydoc, update);
       }
-    });
+    }
+    return ydoc;    
+  } catch (error) {
+    console.error(`[LOAD] Error loading document ${docId}:`, error.message);
+    return new Y.Doc();
+  }
 }
 
-module.exports=connectWebSocket;
+async function saveDocToMongo(docId, ydoc) {
+  try {
+    const update = encodeStateAsUpdate(ydoc);
+    const buffer = Buffer.from(update);
+    
+    await Document.findByIdAndUpdate(
+      docId,
+      { content: buffer, lastEdited: new Date() },
+    );    
+  } catch (error) {
+    console.error(`[SAVE] Error saving document ${docId}:`, error.message);
+  }
+}
+
+function attachListenersToActualDoc(docId, intendedLocalYDoc, mapDocs, autosaveIntervalMs = 5000) {
+  const internalDocs = wsUtils['docs'];
+  
+  if (!internalDocs) {
+    if (intendedLocalYDoc) {
+      intendedLocalYDoc.on('update', () => {});
+    }
+    return { ydoc: intendedLocalYDoc, interval: null };
+  }
+
+  let serverDoc = internalDocs.get(docId);
+  // mere case me yeh call ho raha hai kyu ki setupwsconnection me woh internal map me ek newydoc connect kar ke de raha hai , toh mujhe apna yeh purana wala ydoc merge karna hai usme 
+  if (intendedLocalYDoc) {
+    const existingState = encodeStateAsUpdate(serverDoc);
+    const loadedState = encodeStateAsUpdate(intendedLocalYDoc);
+    
+    if (loadedState.length > existingState.length) {
+      try {
+        Y.applyUpdate(serverDoc, loadedState);
+      } catch (error) {
+        console.error(`[ATTACH] Error merging state for ${docId}:`, error.message);
+      }
+    }
+  }
+
+  const interval = setInterval(() => {
+    saveDocToMongo(docId, serverDoc);
+  }, autosaveIntervalMs);
+
+  mapDocs.set(docId, { ydoc: serverDoc, interval });
+
+  return { ydoc: serverDoc, interval };
+}
+
+function connectWebSocket(server) {
+  const wss = new WebSocket.Server({ server });
+  const userCountDocMap = new Map();
+  const mapDocs = new Map();
+
+  wss.on('connection', async (socket, req) => {
+    let docId;
+    
+    try {
+      req.cookies = cookie.parse(req.headers.cookie || '');
+      await runMiddleware(userAuthorization, req, socket);
+
+      docId = (req.url || '').slice(1);
+      if (!docId) {
+        socket.close();
+        return;
+      }
+      
+      req.params = { docId };
+      await runMiddleware(documentAuthorizationCheck, req, socket);
+
+      const userCount = userCountDocMap.get(docId) || 0;
+      userCountDocMap.set(docId, userCount + 1);
+
+      const intendedLocalYDoc = await loadDocFromMongo(docId);
+
+      setupWSConnection(socket, req, {
+        docName: docId
+      });
+
+      if (userCount === 0) {
+        attachListenersToActualDoc(docId, intendedLocalYDoc, mapDocs);
+      }
+      socket.on('close', async () => {
+        const currentUserCount = userCountDocMap.get(docId);
+        if (!currentUserCount) {
+          return;
+        }
+        const newUserCount = currentUserCount - 1;
+        userCountDocMap.set(docId, newUserCount);
+        if (newUserCount === 0) {
+          const docData = mapDocs.get(docId);
+          if (docData) {
+            await saveDocToMongo(docId, docData.ydoc);
+            if (docData.interval) {
+              clearInterval(docData.interval);
+            }
+            mapDocs.delete(docId);
+          }
+          userCountDocMap.delete(docId);
+        }
+      });
+
+      socket.on('error', (err) => {
+        console.error(`[WS] Socket error for ${docId}:`, err.message);
+      });
+
+    } catch (error) {
+      console.error('[WS] Connection setup error:', error.message);
+      try { socket.close(); } catch(_) {}
+    }
+  });
+
+  wss.on('error', (error) => {
+    console.error('[WS] Server error:', error.message);
+  });
+}
+
+module.exports = connectWebSocket;
