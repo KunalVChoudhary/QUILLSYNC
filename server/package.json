@@ -25,6 +25,9 @@
     "yjs": "^13.6.27"
   },
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "@types/node": "^26.0.0",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
   }
 }
