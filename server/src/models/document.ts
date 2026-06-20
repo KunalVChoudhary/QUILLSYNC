@@ -1,4 +1,4 @@
-const {Schema, model} = require('mongoose')
+import {Schema, model, type InferSchemaType} from 'mongoose';
 
 const documentSchema = new Schema({
     title:{
@@ -30,7 +30,10 @@ const documentSchema = new Schema({
     // }
     history: [
         {
-            content: String,
+            content: {
+                type: Buffer,
+                default: null,
+            },
             editedAt: {
             type: Date,
             default: Date.now
@@ -38,8 +41,12 @@ const documentSchema = new Schema({
         }
     ]
 
-},{timestamps:true})
+},{
+    timestamps:true
+})
 
-const Document = model('document',documentSchema)
+type DocumentType = InferSchemaType<typeof documentSchema>
 
-module.exports=Document
+const Document = model<DocumentType>('document',documentSchema)
+
+export default Document
