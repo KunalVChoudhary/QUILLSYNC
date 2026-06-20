@@ -20,8 +20,8 @@ const userSchema = new Schema({
   timestamps: true,
 });
 
-type User = InferSchemaType<typeof userSchema>;
+export type UserType = InferSchemaType<typeof userSchema>;
 
-const User = model<User>("user", userSchema);
+const User = model<UserType>("user", userSchema);
 
 export default User;
