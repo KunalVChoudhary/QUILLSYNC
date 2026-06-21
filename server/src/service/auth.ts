@@ -20,12 +20,12 @@ export const setJWT=(user:HydratedDocument<UserType>):string=>{
 
 //verify JWT Token 
 export const checkJWT=(token:string): JwtPayload|string|false =>{
-    const secret: string|undefined = process.env.JWT_SECRET_KEY
-
-    if (!secret) {
-        throw new Error('JWT_SECRET_KEY is missing');
-    }
     try {
+        const secret: string|undefined = process.env.JWT_SECRET_KEY
+
+        if (!secret) {
+            throw new Error('JWT_SECRET_KEY is missing');
+        }
         return jwt.verify(token,secret)
     } catch {
         return false
