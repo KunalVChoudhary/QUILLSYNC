@@ -45,7 +45,7 @@ const documentSchema = new Schema({
     timestamps:true
 })
 
-type DocumentType = InferSchemaType<typeof documentSchema>
+export type DocumentType = InferSchemaType<typeof documentSchema>
 
 const Document = model<DocumentType>('document',documentSchema)
 
