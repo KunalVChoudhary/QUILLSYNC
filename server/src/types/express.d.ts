@@ -1,9 +1,12 @@
-import type { JwtPayload } from 'jsonwebtoken';
+import type { AuthPayload } from '../service/auth.ts';
+import type { HydratedDocument } from 'mongoose';
+import type { DocumentType } from '../models/document.ts';
 
 declare global {
   namespace Express {
     interface Request {
-      user?: JwtPayload | string;
+      user?: AuthPayload;
+      document?:HydratedDocument<DocumentType>;
     }
   }
 }
