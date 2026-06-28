@@ -1,32 +1,29 @@
-require('dotenv').config()
-import jwt, {type JwtPayload} from 'jsonwebtoken';
-import { type HydratedDocument } from 'mongoose';
-import {type UserType} from '../models/user.js'
+import jwt from 'jsonwebtoken';
+
+export interface AuthPayload {
+    userId:string
+}
+
+const secret = process.env.JWT_SECRET_KEY;
+
+if (!secret) {
+    throw new Error("JWT_SECRET_KEY is missing");
+}
 
 //sign JWT Token
-export const setJWT=(user:HydratedDocument<UserType>):string=>{
-    const secret: string|undefined = process.env.JWT_SECRET_KEY
-
-    if (!secret) {
-        throw new Error('JWT_SECRET_KEY is missing');
-    }
+export const setJWT=(payload:AuthPayload):string=>{
 
     return jwt.sign(
-            { userId: user._id},
+            payload,
             secret,
             { expiresIn: '24h' }
         );
 }
 
 //verify JWT Token 
-export const checkJWT=(token:string): JwtPayload|string|false =>{
+export const checkJWT=(token:string): AuthPayload|false =>{
     try {
-        const secret: string|undefined = process.env.JWT_SECRET_KEY
-
-        if (!secret) {
-            throw new Error('JWT_SECRET_KEY is missing');
-        }
-        return jwt.verify(token,secret)
+        return jwt.verify(token,secret) as AuthPayload
     } catch {
         return false
     }
