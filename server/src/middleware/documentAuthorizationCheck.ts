@@ -2,11 +2,8 @@ import mongoose from "mongoose";
 import Document from "../models/document.js";
 import { type RequestHandler } from "express";
 
-interface DocumentParams {
-    docId: string;
-}
 
-export const documentAuthorizationCheck:RequestHandler<DocumentParams> = async (req,res,next)=>{
+export const documentAuthorizationCheck:RequestHandler = async (req,res,next)=>{
     try {
         const document=await Document.findById(req.params.docId)
         if (!document){
@@ -33,7 +30,7 @@ export const documentAuthorizationCheck:RequestHandler<DocumentParams> = async (
     
 }
 
-export const documentOwnerAuthorizationCheck:RequestHandler<DocumentParams> = async(req,res,next)=>{
+export const documentOwnerAuthorizationCheck:RequestHandler = async(req,res,next)=>{
      try {
         const document=await Document.findById(req.params.docId)
         if (!document){
