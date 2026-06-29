@@ -32,7 +32,7 @@ export const handleUserRegister:RequestHandler=async(req,res)=>{
     }
 }
 
-const handleUserLogin:RequestHandler=async(req,res)=>{
+export const handleUserLogin:RequestHandler=async(req,res)=>{
     try{
         const {email,password}=req.body
         const user = await User.findOne({email});
@@ -58,7 +58,7 @@ const handleUserLogin:RequestHandler=async(req,res)=>{
 }
 
 
-const handleUserLogout:RequestHandler = (req, res) => {
+export const handleUserLogout:RequestHandler = (req, res) => {
     try{
         res.clearCookie('token', {
         httpOnly: true,
@@ -73,7 +73,7 @@ const handleUserLogout:RequestHandler = (req, res) => {
 };
 
 //used in check auth
-const checker:RequestHandler=async(req,res)=>{
+export const checker:RequestHandler=async(req,res)=>{
     try {
         const user = await User.findById(req.user!.userId)
         if (user){
