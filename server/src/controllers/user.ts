@@ -73,7 +73,7 @@ export const handleUserLogout:RequestHandler = (req, res) => {
 };
 
 //used in check auth
-export const checker:RequestHandler=async(req,res)=>{
+export  const checker:RequestHandler=async(req,res)=>{
     try {
         const user = await User.findById(req.user!.userId)
         if (user){
