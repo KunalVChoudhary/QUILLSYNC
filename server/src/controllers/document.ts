@@ -2,7 +2,7 @@ import { Types} from "mongoose"
 import Document from "../models/document.js"
 import User from "../models/user.js"
 import type { RequestHandler } from "express"
-import { resolveCollaborators } from "../service/collaboratorService.js"
+import { resolveCollaborators } from "../services/collaboratorService.js"
 
 
 //documents controllers

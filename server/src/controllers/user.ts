@@ -1,6 +1,6 @@
 import User from "../models/user.js";
 import bcrypt from 'bcrypt'
-import { setJWT } from "../service/auth.js";
+import { setJWT } from "../services/authService.js";
 import { type RequestHandler } from "express";
 import { MongoServerError } from "mongodb";
 
