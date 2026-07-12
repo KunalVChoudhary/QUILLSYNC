@@ -1,4 +1,4 @@
-import type { AuthPayload } from '../service/auth.ts';
+import type { AuthPayload } from '../services/authService.ts';
 import type { HydratedDocument } from 'mongoose';
 import type { DocumentType } from '../models/document.ts';
 
