@@ -1,4 +1,4 @@
-import { checkJWT } from "../service/auth.js";
+import { checkJWT } from "../services/authService.js";
 import type { RequestHandler } from 'express';
 
 //middleware to check if client is authorized to use a certain feature
