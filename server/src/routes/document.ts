@@ -28,7 +28,7 @@ export const route = Router()
 
 //Document Authorized to access routes
 route.get(
-    '/documents/user', 
+    '/api/documents/user',
     userAuthorization, 
     handleGetAuthorizedDocumentsListRequest
 )
@@ -36,7 +36,7 @@ route.get(
 
 //document routes
 route.get(
-    '/documents/:docId', 
+    '/api/documents/:docId',
     userAuthorization, 
     documentAuthorizationCheck, 
     handleDocumentGetRequest
@@ -44,7 +44,7 @@ route.get(
 
 //route to handle document create request
 route.post(
-    '/documents', 
+    '/api/documents',
     userAuthorization,
     requestBodyInputValidate(createDocumentSchema), 
     handleDocumentCreateRequest
@@ -52,7 +52,7 @@ route.post(
 
 //route to handle document patch request
 route.patch(
-    '/documents/:docId', 
+    '/api/documents/:docId',
     userAuthorization, 
     documentAuthorizationCheck,
     handleDocumentPatchRequest
@@ -60,7 +60,7 @@ route.patch(
 
 //route to handle delete document
 route.delete(
-    '/documents/:docId', 
+    '/api/documents/:docId',
     userAuthorization, 
     documentOwnerAuthorizationCheck, 
     handleDocumentDeleteRequest
@@ -69,7 +69,7 @@ route.delete(
 
 //collaborators route to add new collaborators
 route.patch(
-    '/documents/:docId/collaborator/add', 
+    '/api/documents/:docId/collaborator/add',
     userAuthorization, 
     documentOwnerAuthorizationCheck, 
     requestBodyInputValidate(updateDocumentCollaboratorSchema),
@@ -78,7 +78,7 @@ route.patch(
 
 //collaborators route to remove collaborators
 route.patch(
-    '/documents/:docId/collaborator/remove', 
+    '/api/documents/:docId/collaborator/remove',
     userAuthorization, 
     documentOwnerAuthorizationCheck, 
     requestBodyInputValidate(updateDocumentCollaboratorSchema),
