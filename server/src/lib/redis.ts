@@ -8,12 +8,11 @@ if (!url) {
 
 const redis = new Redis(url);
 
-redis.on("connect", () => {
-  console.log("Redis Connected");
-});
+export const subscriber = redis.duplicate()
+export const publisher = redis.duplicate()
 
-redis.on("error", (err) => {
-  console.error("Redis Error:", err);
-});
-
+for (const client of [redis, publisher, subscriber]) {
+  client.on("connect", () => console.log("Redis Connected"));
+  client.on("error", (err) => console.error("Redis Error:", err));
+}
 export default redis;
