@@ -12,7 +12,7 @@ import * as Y from 'yjs'
 import { publisher, subscriber } from "../../lib/redis.js";
 
 
-function initializeWebSocketServer(server: http.Server) {
+export function initializeWebSocketServer(server: http.Server) {
     const wss = new WebSocketServer({ server });
 
     server.on('upgrade', async(request, socket, head) => {
