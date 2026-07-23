@@ -1,4 +1,4 @@
-import 'dotenv';
+import 'dotenv/config';
 import connectDB from './lib/mongodb.js';
 import { initializeWebSocketServer } from './websockets/y-websocket/setupWSConnection.js';
 import type { RequestHandler } from 'express';
