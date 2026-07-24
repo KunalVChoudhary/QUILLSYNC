@@ -10,7 +10,7 @@ import { resolveCollaborators } from "../services/collaboratorService.js"
 
 //function to get the requested document
 export const handleDocumentGetRequest:RequestHandler = (req,res)=>{
-    return res.status(200).json({document:req.document})
+    return res.status(200).json({ success:true, document:req.document})
 }
 
 
@@ -22,11 +22,11 @@ export const handleDocumentCreateRequest:RequestHandler = async (req,res)=>{
 
         const {failedCollaborator,finalCollaborators} = await resolveCollaborators(collaborators)
         const document = await Document.create({title,owner,collaborators:finalCollaborators})
-        return res.status(201).json({document,failedCollaborator})
+        return res.status(201).json({ success:true, document, failedCollaborator })
 
     } catch (error) {
         console.error(error);
-        return res.status(500).json({message:'Server Error'})
+        return res.status(500).json({ success:false, message:'Server Error' })
     }
 }
 
@@ -42,11 +42,12 @@ export const handleDocumentDeleteRequest: RequestHandler = async (req,res)=>{
     try {
         await Document.findByIdAndDelete(req.document!._id)
         return res.status(200).json({
+            success: true,
             message: "Document deleted successfully",
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({message:'Server Error'})
+        return res.status(500).json({ success:false, message:'Server Error' })
     }
 }
 
@@ -63,11 +64,11 @@ export const handleAddingCollaboratorsRequest: RequestHandler = async (req,res)=
                 }
             },
             {new:true})
-        return res.status(200).json({document,failedCollaborator})
+        return res.status(200).json({ success:true, document, failedCollaborator })
 
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:'Server Error'})
+        return res.status(500).json({ success:false, message:'Server Error' })
     }
 }
 
@@ -95,12 +96,18 @@ export const handleRemovingCollaboratorsRequest: RequestHandler = async (req,res
                 (id) => !removeId.some(removeIdVal => removeIdVal.equals(id))
             );
             const document = await Document.findByIdAndUpdate(req.document!._id,{collaborators:newCollaborators},{new:true})
-            return res.status(200).json({document,failedCollaborator})
+            return res.status(200).json({ success:true, document, failedCollaborator })
 
-        }} catch (error){
-            console.log(error);
-            return res.status(500).json({message:'Server Error'})
         }
+        return res.status(200).json({
+            success: true,
+            document: req.document,
+            failedCollaborator: []
+        });
+    } catch (error){
+        console.log(error);
+        return res.status(500).json({ success:false, message:'Server Error' })
+    }
 }
 
 
@@ -120,9 +127,9 @@ export const handleGetAuthorizedDocumentsListRequest: RequestHandler = async (re
         else collaboratorDocs.push([doc._id,doc.title,doc.owner]);
         });
 
-        return res.json({ ownedDocuments: ownedDocs, collaboratorDocuments: collaboratorDocs });
+        return res.json({ success:true, ownedDocuments: ownedDocs, collaboratorDocuments: collaboratorDocs });
     } catch (error) {
         console.log(error);
-        return res.status(500).json({message:'Server Error'})
+        return res.status(500).json({ success:false, message:'Server Error' })
     }
 }
