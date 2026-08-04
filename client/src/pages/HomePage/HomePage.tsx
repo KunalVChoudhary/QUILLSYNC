@@ -1,6 +1,7 @@
 import LandingHeader from '../../components/LandingHeader/LandingHeader';
 import FeatureSection from '../../components/LandingPage/FeatureSection';
 import HeroSection from '../../components/LandingPage/HeroSection';
+import HowItWorks from '../../components/LandingPage/HowItWorks';
 import styles from './HomePage.module.scss';
 
 function HomePage() {
@@ -9,6 +10,7 @@ function HomePage() {
             <LandingHeader />
             <HeroSection />
             <FeatureSection />
+            <HowItWorks />
         </main>
     );
 }
