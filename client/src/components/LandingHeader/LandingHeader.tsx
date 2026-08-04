@@ -42,6 +42,7 @@ function LandingHeader() {
                     <div className={styles.links}>
                         <a href="#top" onClick={closeMenu}>Overview</a>
                         <a href="#product-preview" onClick={closeMenu}>Product</a>
+                        <a href="#features" onClick={closeMenu}>Features</a>
                     </div>
                     <div className={styles.actions}>
                         {!user && (

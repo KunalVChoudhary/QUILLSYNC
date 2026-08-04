@@ -1,0 +1,29 @@
+.landingPage {
+    --landing-background: #f7f7f3;
+    --landing-surface: #ffffff;
+    --landing-ink: #171817;
+    --landing-muted: #6a6d66;
+    --landing-border: #dedfd8;
+    --landing-accent: #3455db;
+    --landing-accent-dark: #2945b7;
+    --landing-lime: #dff06b;
+    --landing-pink: #eea6c8;
+    --landing-mint: #9ad8bf;
+    --landing-max-width: 1200px;
+
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    overflow: hidden;
+    background: var(--landing-background);
+    color: var(--landing-ink);
+    font-family: Inter, Avenir Next, Avenir, Helvetica Neue, Arial, sans-serif;
+
+    :global(*) {
+        box-sizing: border-box;
+    }
+
+    :global(a) {
+        color: inherit;
+    }
+}
