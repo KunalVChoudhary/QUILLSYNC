@@ -13,6 +13,7 @@ dist/
 build/
 coverage/
 *.local
+TODO.md
 
 # React (client/)
 client/node_modules/
@@ -24,6 +25,7 @@ client/dist/
 client/.vite/
 client/coverage/
 client/public/images
+client/*.tsbuildinfo
 
 # Express (server/)
 server/node_modules/
